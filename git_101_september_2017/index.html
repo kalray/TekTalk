@@ -676,6 +676,48 @@ add-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add 
 				</section>
 
 				<section>
+						<h3>Git prompt</h3>
+						<ul>
+								<li>Source <code>git-prompt.sh</code> (may be in <code>/usr/share/git-core/contrib/completion/</code>, depends on distribution packaging).</li>
+								<li>Set your preferences (documentation is in <code>git-prompt.sh</code>
+										<pre><code class="bash" data-trim>
+										export GIT_PS1_SHOWDIRTYSTATE=true
+										export GIT_PS1_SHOWSTASHSTATE=true
+										export GIT_PS1_SHOWUNTRACKEDFILES=true
+										export GIT_PS1_SHOWUPSTREAM="git legacy"
+										export GIT_PS1_DESCRIBE_STYLE="branch"
+										export GIT_PS1_SHOWCOLORHINTS=true
+										</code></pre>
+								</li>
+						</ul>
+				</section>
+
+				<section>
+						<h3>Git prompt</h3>
+						<p>on slow partitions (nfs for example)</p>
+						<pre><code class="bash">function __is_slow_storage() {
+  STAT_OPT="-L --file-system --format=%T"
+  [ $OSTYPE == "Darwin" ] && STAT_OPT="-L -f \"%HT\""
+  stat_ret=$(stat $STAT_OPT "$1")
+  [[ $stat_ret =~ nfs|fuseblk ]] && echo yes || echo no
+}
+prompt_precmd() {
+  ...
+  if [[ $(__is_slow_storage "$(pwd)") == no && \
+    $(type  __git_ps1 2> /dev/null) ]]; then
+      PS1="${PS1}${YELLOW}$(__git_ps1 '%s') "
+  else
+    if [[ $(type git 2> /dev/null) ]]; then
+      ref=$(git rev-parse --abbrev-ref HEAD 2> /dev/null)
+      if [[ $? == 0 ]]; then
+        PS1="${PS1}${YELLOW}${ref#refs/heads/} "
+      fi
+    fi
+  fi
+}</code></pre>
+				</section>
+
+				<section>
 						<h3>External tools</h3>
 						<ul>
 								<li>gitk (tcl), tig (cli)</li>
