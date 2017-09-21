@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Git 101: some handful tips</title>
+
+		<meta name="description" content="Git">
+		<meta name="author" content="Jérôme Reybert">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<!-- <link rel="stylesheet" href="css/theme/white-sketch.css" id="theme"> -->
+		<link rel="stylesheet" href="css/theme/solarized.css" id="theme">
+		<link rel="stylesheet" href="css/style.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+			<style type="text/css">
+				p { text-align: left; }
+				ul.vegetable {
+					list-style: none;
+					margin-left: 0;
+					padding-left: 1.2em;
+					text-indent: -1.2em;
+				}
+				li.watermelon:before {
+					content: "\1F349";
+					display: block;
+					float: left;
+					width: 1.2em;
+				}
+				li.carrot:before {
+					content: "\1F955";
+					display: block;
+					float: left;
+					width: 1.2em;
+				}
+				.reveal code {
+						font-size: 70%;
+						font-weight: bold;
+				}
+				.reveal pre code {
+						font-size: 80%;
+						font-weight: normal;
+				}
+			</style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+			<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+
+				<section>
+					<img src="img/Git-Logo-2Color.svg" style="width: 70%"/>
+					101
+				</section>
+
+				<section>
+					Git is powerful, but watch your fingers.
+					<img src="img/fun/fast_cut_watermelon.gif"/>
+				</section>
+
+				<section>
+					<div style="position:relative" >
+						<img src="./img/git-transport-v1-fixed.png"/>
+					</div>
+					<div style="position:relative" >
+						<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+							<img src="img/git-transport-v1-workspace.png" height="100" style="float: left; "/>
+							files actually visible in your project directory.
+						</div>
+						<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+							<img src="img/git-transport-v1-index.png" height="100" style="float: left; "/>
+							also called staging area, it is used for preparing commit. You interact with it with <code>add</code>, <code>reset</code>...
+						</div>
+						<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+							<img src="img/git-transport-v1-local.png" height="100" style="float: left; "/>
+							the repository on your workstation.You interact with it with <code>commit</code>, <code>checkout</code>...
+						</div>
+						<div class="fragment" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+							<img src="img/git-transport-v1-remote.png" height="100" style="float: left; "/>
+							<strong>one</strong> of the possible remote repository. It can on another computer (accessible through ssh or http) or another directory on your workstation. You interact with it with <code>push</code>, <code>pull</code>...
+						</div>
+					</div>
+				</section>
+
+				<section>
+						<h3>Git revisions</h3>
+						<p>Or how to navigate into the repository</p>
+						<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<ul>
+								<li><code>sha1</code>: unique reference to a commit object</li>
+								<li><code>refname</code>: symbolic string, pointing to a file into <code>.git/</code> dir.
+								<ul>
+										<li><code>branch</code>: e.g. master, heads/master, refs/heads/master</li>
+										<li><code>HEAD</code>, <code>FETCH_HEAD</code>, <code>ORIG_HEAD</code>, <code>MERGE_HEAD</code>, <code>CHERRY_PICK_HEAD</code></li>
+								</ul>
+								</li>
+						</ul>
+						</div>
+						<div class="fragment" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<ul>
+								<li><code>modifiers</code>: ancestors of a ref:
+										<ul>
+												<li><code>ref@n</code>: nth commit older than ref in current branch</li>
+												<li><code>ref^n</code>: nth parent of ref, to go through merges</li>
+												<li><code>ref@{n}</code>: nth reference in reflog (mainly for <code>HEAD</code></li>
+												<li><code>ref@{date}</code>: e.g. ref@{yesterday}, ref@{5 minutes ago}, useful for log for example</li>
+												<li><code>ref^{/regex}</code>: first commit containing <code>regex</code> from ref</li>
+												<li><code>:/regex</code>: short form, from HEAD</li>
+												<li><code>ref:path</code>: tree limited to commits touching path</li>
+										</ul>
+								</li>
+						</ul>
+						</div>
+				</section>
+
+				<section>
+						<h3>Git branches</h3>
+						<ul>
+								<li class="fragment">local or remote
+										<pre><code class="console" data-trim>
+$ cat .git/refs/heads/master 
+3ecb3caab53506ec2614e7e6fed19b41d09cc2ee
+										</code></pre>
+								</li>
+								<li class="fragment"><em>Create</em>
+										<pre><code class="console" data-trim>
+										$ git branch branchname
+										$ git checkout -b branchname
+										</code></pre>
+								</li>
+								<li class="fragment"><em>Change</em>
+										<pre><code class="console" data-trim>
+										$ git checkout branchname
+										$ git checkout HEAD .
+										</code></pre>
+								</li>
+								<li class="fragment"><em>Delete</em>
+										<pre><code class="console" data-trim>
+										$ git branch -d branchname
+										</code></pre>
+								</li>
+						</ul>
+				</section>
+
+				<section>
+					<h3>How <span class="fragment" data-fragment-index="0">NOT</span> to commit</h3>
+					<div style="float: left; ">
+						<code>
+							git commit -a
+						</code>
+					</div>
+					<div class="fragment" data-fragment-index="0">
+						<img src="img/fun/afraid_melon.gif"/>
+					</div>
+					<div class="fragment" data-fragment-index="1">
+						<ul>
+							<li> you want to divide your commits by features / bug fixes</li>
+							<li> you may accidently commit build files</li>
+						</ul>
+					</div>
+				</section>
+
+				<section>
+					<h3>How to commit</h3>
+					<div>
+						<img src="img/xkcd_commit.png"/>
+					</div>
+					<ul>
+						<li class="fragment">Commit often, cleanup after.</li>
+						<li class="fragment">Try to compile at each commit.</li>
+						<li class="fragment">If your workspace is dirty after a commit:
+							<pre><code class="console" data-trim>
+								$ git commit
+								$ git stash
+								$ make
+								$ git stash pop
+							</code></pre>
+						</li>
+					</ul>
+				</section>
+
+				<section>
+						<h3>How to stage</h3>
+						<ul>
+							<li>All the modifications in a file may not end in the same commit, <code>git add file</code> may not be enough.</li>
+							<li>Reveal the real power of git by splitting your unstaged diffs in multiple commits.</li>
+						</ul>
+						<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+								<img src="img/fun/efficient_melon.gif"/>
+						</div>
+						<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+							<p>Some tools:</p>
+								<ul>
+										<li>git add --interactive (good luck)</li>
+										<li>git gui</li>
+										<li>magit (emacs)</li>
+										<li>vimagit (vim)</li>
+								</ul>
+						</div>
+				</section>
+
+				<section>
+					<h3>Commit fixup</h3>
+					<p>
+					As much as possible, try to avoid commits like<br>
+					<code>"Fix previous commit"</code><br>
+					This kind of commit is actually easy to avoid!
+					</p>
+					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<p>If you want to fix the previous commit:</p>
+							<pre><code class="console" data-trim>
+							$ git add somestuff.c
+							$ git commit --amend
+							</code></pre>
+					</div>
+					<div class="fragment" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<p>If it is not the direct previous commit:</p>
+
+						<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+							<pre><code class="console" data-trim>
+								$ git log --oneline
+								1526d53 Print argv[0]
+								3d42b65 Print hello world
+								754d360 Initial commit
+								</code></pre>
+						</div>
+
+						<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+							<pre><code class="console">$ diff --git i/main.c w/main.c
+index 29c4ca0..0737fd3 100644
+--- i/main.c
++++ w/main.c
+@@ -1,3 +1,5 @@
++#include <stdio.h>
++
+ int main(int argc, const char *argv[]) {
+        printf("Hello world: %s\n", argv[0]);
+        return 0;</code></pre>
+						</div>
+
+						<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+							<pre><code class="console" data-trim>
+								$ git add main.c 
+								$ git commit --fixup=3d42b65
+								[master 9a2e3e4] fixup! Print hello world
+								 1 file changed, 2 insertions(+)
+
+								$ git log --oneline 
+								9a2e3e4 fixup! Print hello world
+								1526d53 Print argv[0]
+								3d42b65 Print hello world
+								754d360 Initial commit
+							</code></pre>
+						</div>
+
+						<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+							<pre><code class="console" data-trim>
+								$ git rebase -i --autosquash 3d42b65^
+								# in editor
+								pick 3d42b65 Print hello world
+								fixup 9a2e3e4 fixup! Print hello world
+								pick 1526d53 Print argv[0]
+
+								$ git log --oneline 
+								3ecb3ca Print argv[0]
+								1425a23 Print hello world
+								754d360 Initial commit
+							</code></pre>
+						</div>
+					</div>
+
+
+				</section>
+
+				<section>
+					<h3>Rebasing</h3>
+					<!-- <div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; "> -->
+					<!-- 	<img src="img/git_rebase_start.png"/> -->
+					<!-- </div> -->
+					<!-- <div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; "> -->
+					<!-- 	<img src="img/git_rebase_merge.png"/> -->
+					<!-- </div> -->
+					<!-- <div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; "> -->
+					<!-- 	<img src="img/git_rebase_end.png"/> -->
+					<!-- </div> -->
+					<img src="img/git_rebase_anim2.gif"/>
+
+				</section>
+
+				<section>
+					<h3>Why would I want to rebase?</h3>
+					<ul>
+						<li class="fragment">As seen previously, to avoid "Fix previous commit" commits</li>
+						<li class="fragment">If you rebase your dev branch upon master, it eases the reading of the history, git bisecting...</li>
+						<li class="fragment">It may seem more complicated than a <em>simple</em> merge, but it is actually safer: if your have a lot of conflicts, resolving the conflicts commit by commit gives you more context.</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>When can I rebase?</h3>
+					<div style="float: left; width: 40%;">
+						<p>I heard rebase can be dangerous.</p>
+						<img src="img/fun/catapult_watermelon.gif" class="fragment"/>
+					</div>
+					<div style="float: right; width: 50%;">
+						<div class="fragment current-visible" style="position:absolute; top: 50%;">
+							<p>The rebase itself is not a problem (it is a local operation), but <code>push --force</code> must be used with cautious.</p>
+						</div>
+						<div class="fragment current-visible" style="position:absolute; top: 50%;">
+							<p><strong>Common case</strong>: your integration failed, and you know nobody already merged your branch, you can <code>push --force</code> or <code>push --force-with-lease</code>.</p>
+						</div>
+						<div class="fragment current-visible" style="position:absolute; top: 50%;">
+							<p>Never ever <code>rebase</code> and <code>push --force</code> a branch that have been integrated or merged by other users.</p>
+						</div>
+						<div class="fragment" style="position:absolute; top: 50%;">
+							<p>Make sure to rebase your branch upon master, and not the opposite (rebase -i is a good safeguard for this).</p>
+						</div>
+					</div>
+				</section>
+
+				<section>
+					<h3>How to rebase</h3>
+					<ul>
+						<li>always use <code>git rebase -i</code>.</li>
+						<li>if something seems wrong, quit vim with <code>:cq</code> or delete all the lines.</li>
+						<li>create a temporary branch to perform the rebase. Once it's done, move your branch head.</li>
+					</ul>
+					<pre><code class="console" data-trim data-noescape>
+							$ git checkout -b rebase_branch
+							$ git remote update origin
+							$ git rebase -i origin/master
+							<span class="fragment" data-fragment-index="5">$ git branch -M aci/user/master</span>
+					</code></pre>
+
+					<div class="fragment current-visible" data-fragment-index="0" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<pre><code class="console" data-trim>
+							> pick 33d5b7a My lovely new faeture #1
+							> pick 9480b3d Another feature #2
+							> pick 5c67e61 Fix compilation warning from feature #1
+							> pick 285de5a A commit that should go in another branch
+						</code></pre>
+					</div>
+					<div class="fragment current-visible" data-fragment-index="1" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<pre><code class="console" data-trim>
+							> reword 33d5b7a My lovely new faeture #1
+							> pick 9480b3d Another feature #2
+							> pick 5c67e61 Fix compilation warning from feature #1
+							> pick 285de5a A commit that should go in another branch
+						</code></pre>
+					</div>
+					<div class="fragment current-visible" data-fragment-index="2" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<pre><code class="console" data-trim>
+							> reword 33d5b7a My lovely new faeture #1
+							> squash 5c67e61 Fix compilation warning from feature #1
+							> pick 9480b3d Another feature #2
+							> pick 285de5a A commit that should go in another branch
+						</code></pre>
+					</div>
+					<div class="fragment current-visible" data-fragment-index="3" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<pre><code class="console" data-trim>
+							> reword 33d5b7a My lovely new faeture #1
+							> squash 5c67e61 Fix compilation warning from feature #1
+							> pick 9480b3d Another feature #2
+						</code></pre>
+					</div>
+
+					<div class="fragment current-visible" data-fragment-index="4" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<pre><code class="console" data-trim>
+						:wq
+						</code></pre>
+					</div>
+				</section>
+
+				<section>
+					<h3>Rebase goes wrong</h3>
+					If rebase encounters conflicts, it stops and warn you. Keep calm, everything will be ok.
+					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+							<pre><code class="console" data-trim>
+									$ git rebase -i origin/master
+									The previous cherry-pick is now empty, possibly due to conflict resolution.
+									If you wish to commit it anyway, use:
+											git commit --allow-empty
+									...
+									$ git status --short
+									$ git rebase --continue
+							</code></pre>
+							<p>It means that rebase applied a commit that does nothing.</p>
+					</div>
+
+					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+							<pre><code class="console" data-trim data-noescape>
+							$ git rebase --continue
+							Auto-merging platform/mppa/pktio/pcie.c
+							CONFLICT (content): Merge conflict in platform/mppa/pktio/pcie.c
+							Auto-merging platform/mppa/include/odp/rpc/pcie.h
+							CONFLICT (content): Merge conflict in platform/mppa/include/odp/rpc/pcie.h
+							Auto-merging firmware/common/pcie/rpc.c
+							error: could not apply 0087ba25f... firmware: pcie/rpc: rename Tx credit structure attributes
+							
+							Resolve all conflicts manually, mark them as resolved with
+							"git add/rm <conflicted_files>", then run "git rebase --continue".
+							You can instead skip this commit: run "git rebase --skip".
+							To abort and get back to the state before "git rebase", run "git rebase --abort".
+							
+							Could not apply 0087ba25f... firmware: pcie/rpc: rename Tx credit structure attributes
+
+							$ git status --short
+							## HEAD (no branch)
+							M  firmware/common/pcie/rpc.c
+							UU platform/mppa/include/odp/rpc/pcie.h
+							UU platform/mppa/pktio/pcie.c
+
+							$ vim platform/mppa/include/odp/rpc/pcie.h platform/mppa/pktio/pcie.c
+							$ git add platform/mppa/include/odp/rpc/pcie.h platform/mppa/pktio/pcie.c
+							$ git rebase --continue
+							</code></pre>
+							In case of conflict, edit, add and continue.
+					</div>
+					
+					<div class="fragment" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+							<img src="img/git_sequencer.png"/>
+							<p>If you are lost, you can use git-sequencer (developped by nmorey).<br>
+							<a href="https://github.com/nmorey/git-sequencer-status/">https://github.com/nmorey/git-sequencer-status/</a>
+							</p>
+					</div>
+
+				</section>
+
+				<section>
+					<h3>Rebase a root submodule</h3>
+					Can I rebase a root submodule repository?
+					<p>You can, but in case of a failed integration, it is easier to do like:</p>
+					<pre><code class="console" data-trim>
+							$ cd submodule; edit and fix; git add; git commit; git rebase -i;
+							$ cd ..
+							$ git reset --hard origin/master
+							$ ./integrate.rb
+					</code></pre>
+				</section>
+
+				<section>
+					<h3>Rebase tips</h3>
+					<ul>
+						<li class="fragment">In case of emergency: <code>git rebase --abort</code>.</li>
+						<li class="fragment">Get a range of commit
+							<pre><code class="console" data-trim>
+							$ git cherry-pick sha1start..sha1end
+							</code></pre>
+							</li>
+						<li class="fragment">Some nice options to set in .gitconfig:</li>
+						<ul>
+							<li class="fragment">autosquash</li>
+							<li class="fragment">autostash (not in Centos)</li>
+							<li class="fragment">rerere</li>
+							<li class="fragment"><div>rc alias</div>
+									<pre style="position:absolute; left: 0; right: 0; ">
+										<code class="bash" data-trim>
+									rc = "!f() { if git grep --no-cached -q \"^(<<<<<<< |>>>>>>> |=======$)\"; then \
+									echo Conflict markers still present; return 1; fi; git rebase --continue;}; f "
+							</code></pre>
+							</li>
+						</ul>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Is rebase always a good idea?</h3>
+					<ul>
+						<li class="fragment">To avoid "Fix previous commit": <strong>YES</strong></li>
+						<li class="fragment">For dev branch upon master, it is debatable:</li>
+						<ul>
+							<li class="fragment">In simple rebase + fast forward merge, you loose the information on when rebase append.</li>
+							<li class="fragment">If you introduce a sneaky bug during rebase, it will be harder to find than in a merge </li>
+						</ul>
+				</section>
+
+				<section>
+					<h3>Comparison of workflows</h3>
+					<p>&#x1F349; is good, &#x1F955; is wrong</p>
+					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<h4>squash (via rebase && merge --squash)</h4>
+						<ul class="vegetable">
+							<li class="watermelon">easily revert a feature by reverting a single commit</li>
+							<li class="watermelon">ensure git history is linear</li>
+							<li class="carrot">lose feature commit history</li>
+						</ul>
+					</div>
+
+					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<h4>rebase</h4>
+						<ul class="vegetable">
+							<li class="watermelon">preserve feature commit history</li>
+							<li class="watermelon">ensure git history is linear</li>
+							<li class="carrot">unclear what commits together make up a single feature, need context to revert</li>
+						</ul>
+					</div>
+
+					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<h4>merge</h4>
+						<ul class="vegetable">
+							<li class="watermelon">preserve feature commit history</li>
+							<li class="watermelon">easily revert a feature by reverting a single commit</li>
+							<li class="carrot">git history isn't necessarily linear - feature branches can overlap on the mainline</li>
+							<li class="carrot">a merge commit might not be created (and reverting will be hard) if a fast-forward happens when merging against the HEAD of a branch</li>
+						</ul>
+					</div>
+
+					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<h4>merge --no-ff</h4>
+						<ul class="vegetable">
+							<li class="watermelon">preserve feature commit history</li>
+							<li class="watermelon">easily revert a feature by reverting a single commit</li>
+							<li class="carrot">git history isn't necessarily linear</li>
+							<li class="carrot">feature branches can overlap on the mainline</li>
+						</ul>
+					</div>
+
+					<div class="fragment" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<h4>rebase && merge --no-ff</h4>
+						<ul class="vegetable">
+							<li class="watermelon">preserve feature commit history</li>
+							<li class="watermelon">easily revert a feature by reverting a single commit</li>
+							<li class="watermelon">ensure git history is linear</li>
+						</ul>
+					</div>
+				</section>
+
+				<section>
+					<h3>git reset</h3>
+					<div>
+						<img src="./img/git-transport-v1-bottom.png"/>
+					</div>
+					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+							Undo add
+								<pre><code class="console" data-trim>
+										$ edit
+										$ git add frotz.c filfre.c
+										$ git reset
+								</code></pre>
+					</div>
+
+					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+							Undo a commit and redo (commit --amend)
+								<pre><code class="console" data-trim>
+										$ git commit
+										$ git reset --soft HEAD^      (1)
+										$ edit                        (2)
+										$ git commit -a -c ORIG_HEAD  (3)
+								</code></pre>
+					</div>
+
+					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+							Create a new branch and rewind master.
+								<pre><code class="console" data-trim>
+										$ git branch dev/new_feature
+										$ git reset --hard HEAD~3
+										$ git checkout dev/new_feature
+								</code></pre>
+					</div>
+
+					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+							Lost in the middle of a merge.
+								<pre><code class="console" data-trim>
+										$ git reset --merge
+								</code></pre>
+					</div>
+
+					<div class="fragment" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+							The last WIP before the week-end.
+								<pre><code class="console" data-trim>
+										$ hack hack hack
+										$ git checkout -b dev/big_wip
+										$ git commit -am "BIG WIP"
+										$ git push
+										# and on monday morning
+										$ git reset HEAD~1
+								</code></pre>
+					</div>
+				</section>
+
+				<section>
+						<h3>git worktree</h3>
+						<p>If you want to fix something in a dirty repo, if you want to easily compare two branches, in general if you want to work in multiple branches in the same repository:
+						<pre><code class="console" data-trim>
+						$ git worktree add ../odp-2.5.2 origin/release/master/2.5.2
+						</code></pre>
+						</p>
+				</section>
+
+				<section>
+						<h3>External tools</h3>
+						<ul>
+								<li>gitk (tcl), tig (cli)</li>
+								<li>git gui</li>
+								<li>magit (emacs)</li>
+								<li>fugitive, git-gutter, vimagit (vim)</li>
+						</ul>
+						<div class="fragment">
+								<img src="img/fun/fast_eat_watermelon.gif"/>
+						</div>
+				</section>
+
+				<section>
+						<div>Thanks for your attention.</div>
+						<img src="img/fun/sleepy_cat_melon.gif"/>
+				</section>
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: false,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
