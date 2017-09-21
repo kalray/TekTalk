@@ -510,52 +510,90 @@ index 29c4ca0..0737fd3 100644
 
 				<section>
 					<h3>Comparison of workflows</h3>
-					<p>&#x1F349; is good, &#x1F955; is wrong</p>
 					<div class ="fragment current-visible overlap">
-						<h4>squash (via rebase && merge --squash)</h4>
-						<ul class="vegetable">
-							<li class="watermelon">easily revert a feature by reverting a single commit</li>
-							<li class="watermelon">ensure git history is linear</li>
-							<li class="carrot">lose feature commit history</li>
-						</ul>
-					</div>
-
-					<div class ="fragment current-visible overlap">
-						<h4>rebase</h4>
-						<ul class="vegetable">
-							<li class="watermelon">preserve feature commit history</li>
-							<li class="watermelon">ensure git history is linear</li>
-							<li class="carrot">unclear what commits together make up a single feature, need context to revert</li>
-						</ul>
+						<h4>Initial state</h4>
+						<div style="float: left; width: 80%">
+							<ul>
+								<li><code>a b c</code> is master branch, <code>d e f</code> is feature branch.</li>
+								<li>We want to bring feature in master branch.</li>
+								<li>In further comparison, &#x1F349; is good, &#x1F955; is wrong</li>
+							</ul>
+						</div>
+						<div style="float: right; width: 20%;">
+							<img src="img/merge_workflow_init.png"/>
+						</div>
 					</div>
 
 					<div class ="fragment current-visible overlap">
 						<h4>merge</h4>
-						<ul class="vegetable">
-							<li class="watermelon">preserve feature commit history</li>
-							<li class="watermelon">easily revert a feature by reverting a single commit</li>
-							<li class="carrot">git history isn't necessarily linear - feature branches can overlap on the mainline</li>
-							<li class="carrot">a merge commit might not be created (and reverting will be hard) if a fast-forward happens when merging against the HEAD of a branch</li>
-						</ul>
+						<div style="float: left; width: 80%">
+							<ul class="vegetable">
+								<li class="watermelon">preserve feature commit history</li>
+								<li class="watermelon">easily revert a feature by reverting a single commit</li>
+								<li class="carrot">git history isn't necessarily linear - feature branches can overlap on the mainline</li>
+								<li class="carrot">a merge commit might not be created (and reverting will be hard) if a fast-forward happens when merging against the HEAD of a branch</li>
+							</ul>
+						</div>
+						<div style="float: right; width: 20%;">
+							<img src="img/merge_workflow_merge.png"/>
+						</div>
 					</div>
 
 					<div class ="fragment current-visible overlap">
 						<h4>merge --no-ff</h4>
-						<ul class="vegetable">
-							<li class="watermelon">preserve feature commit history</li>
-							<li class="watermelon">easily revert a feature by reverting a single commit</li>
-							<li class="carrot">git history isn't necessarily linear</li>
-							<li class="carrot">feature branches can overlap on the mainline</li>
-						</ul>
+						<div style="float: left; width: 80%">
+							<ul class="vegetable">
+								<li class="watermelon">preserve feature commit history</li>
+								<li class="watermelon">easily revert a feature by reverting a single commit</li>
+								<li class="carrot">git history isn't necessarily linear</li>
+								<li class="carrot">feature branches can overlap on the mainline</li>
+							</ul>
+						</div>
+						<div style="float: right; width: 20%;">
+							<img src="img/merge_workflow_merge.png"/>
+						</div>
+					</div>
+
+					<div class ="fragment current-visible overlap">
+						<h4>rebase</h4>
+						<div style="float: left; width: 80%">
+							<ul class="vegetable">
+								<li class="watermelon">preserve feature commit history</li>
+								<li class="watermelon">ensure git history is linear</li>
+								<li class="carrot">unclear what commits together make up a single feature, need context to revert</li>
+							</ul>
+						</div>
+						<div style="float: right; width: 20%;">
+							<img src="img/merge_workflow_rebase.png"/>
+						</div>
+					</div>
+
+					<div class ="fragment current-visible overlap">
+						<h4>squash (via rebase && merge --squash)</h4>
+						<div style="float: left; width: 80%">
+							<ul class="vegetable">
+								<li class="watermelon">easily revert a feature by reverting a single commit</li>
+								<li class="watermelon">ensure git history is linear</li>
+								<li class="carrot">lose feature commit history</li>
+							</ul>
+						</div>
+						<div style="float: right; width: 20%;">
+							<img src="img/merge_workflow_squash.png"/>
+						</div>
 					</div>
 
 					<div class ="fragment overlap">
 						<h4>rebase && merge --no-ff</h4>
-						<ul class="vegetable">
-							<li class="watermelon">preserve feature commit history</li>
-							<li class="watermelon">easily revert a feature by reverting a single commit</li>
-							<li class="watermelon">ensure git history is linear</li>
-						</ul>
+						<div style="float: left; width: 80%">
+							<ul class="vegetable">
+								<li class="watermelon">preserve feature commit history</li>
+								<li class="watermelon">easily revert a feature by reverting a single commit</li>
+								<li class="watermelon">ensure git history is linear</li>
+							</ul>
+						</div>
+						<div style="float: right; width: 20%;">
+							<img src="img/merge_workflow_merge_noff.png"/>
+						</div>
 					</div>
 				</section>
 
