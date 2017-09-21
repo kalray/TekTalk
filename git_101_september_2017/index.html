@@ -130,7 +130,7 @@
 								</li>
 						</ul>
 						</div>
-						<div class ="fragment overlap">
+						<div class ="fragment current-visible overlap">
 						<ul>
 								<li><code>modifiers</code>: ancestors of a ref:
 										<ul>
@@ -140,7 +140,17 @@
 												<li><code>ref@{date}</code>: e.g. ref@{yesterday}, ref@{5 minutes ago}, useful for log for example</li>
 												<li><code>ref^{/regex}</code>: first commit containing <code>regex</code> from ref</li>
 												<li><code>:/regex</code>: short form, from HEAD</li>
-												<li><code>ref:path</code>: tree limited to commits touching path</li>
+												<li><code>git show ref:path</code>: show the content of <code>path</code> on <code>ref</code></li>
+										</ul>
+								</li>
+						</ul>
+						</div>
+						<div class ="fragment overlap">
+						<ul>
+								<li><code>limiters</code>:
+										<ul>
+												<li><code>git log -- path</code>: limit log to commits touching <code>path</code></li>
+												<li><code>git log -- ":(exclude)path)</code>: exclude commits touching <code>path</code> from log</li>
 										</ul>
 								</li>
 						</ul>
@@ -204,8 +214,8 @@ $ cat .git/refs/heads/master
 						<li class="fragment">Try to compile at each commit.</li>
 						<li class="fragment">If your workspace is dirty after a commit:
 							<pre><code class="console" data-trim>
-								$ git commit
-								$ git stash
+								$ git add somefiles.c
+								$ git stash --keep-index --include-untracked
 								$ make
 								$ git stash pop
 							</code></pre>
@@ -481,20 +491,26 @@ index 29c4ca0..0737fd3 100644
 							$ git cherry-pick sha1start..sha1end
 							</code></pre>
 							</li>
-						<li class="fragment">Some nice options to set in .gitconfig:</li>
-						<ul>
-							<li class="fragment">autosquash</li>
-							<li class="fragment">autostash (not in Centos)</li>
-							<li class="fragment">rerere</li>
-							<li class="fragment"><div>rc alias</div>
-									<pre style="position:absolute; left: 0; right: 0; ">
-										<code class="bash" data-trim>
-									rc = "!f() { if git grep --no-cached -q \"^(<<<<<<< |>>>>>>> |=======$)\"; then \
-									echo Conflict markers still present; return 1; fi; git rebase --continue;}; f "
-							</code></pre>
+							<li class="fragment">Some nice options to set in .gitconfig:
+									<ul>
+											<li>autosquash</li>
+											<li>autostash (not in Centos)</li>
+											<li>rerere</li>
+									</ul>
 							</li>
-						</ul>
 					</ul>
+				</section>
+
+				<section>
+					<h3>Rebase tips</h3>
+					<p>rebase, add, edit git aliases:</p>
+					<pre><code class="bash">rebase-continue = "!f() { if git grep --no-cached -q \"^(<<<<<<< |>>>>>>> |=======$)\"; then \
+  echo Conflict markers still present; return 1; fi; git rebase --continue;}; f "
+edit-modified = "!f() { git ls-files --modified | cut -f2 | sort -u ; }; $EDITOR `f`"
+edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; \
+  $EDITOR '+/^\\%(<<<<<<< \\|>>>>>>> \\|=======$\\)' `f`"
+add-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add `f`"
+					</code></pre>
 				</section>
 
 				<section>
