@@ -58,6 +58,15 @@
 						font-size: 80%;
 						font-weight: normal;
 				}
+
+				div.overlap {
+						position:absolute;
+						margin-left: auto;
+						margin-right: auto;
+						left: 0;
+						right: 0;
+						width: 100%;
+				}
 			</style>
 
 		<!--[if lt IE 9]>
@@ -88,19 +97,19 @@
 						<img src="./img/git-transport-v1-fixed.png"/>
 					</div>
 					<div style="position:relative" >
-						<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<div class="fragment current-visible overlap">
 							<img src="img/git-transport-v1-workspace.png" height="100" style="float: left; "/>
 							files actually visible in your project directory.
 						</div>
-						<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<div class="fragment current-visible overlap">
 							<img src="img/git-transport-v1-index.png" height="100" style="float: left; "/>
 							also called staging area, it is used for preparing commit. You interact with it with <code>add</code>, <code>reset</code>...
 						</div>
-						<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<div class="fragment current-visible overlap">
 							<img src="img/git-transport-v1-local.png" height="100" style="float: left; "/>
 							the repository on your workstation.You interact with it with <code>commit</code>, <code>checkout</code>...
 						</div>
-						<div class="fragment" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<div class="fragment overlap">
 							<img src="img/git-transport-v1-remote.png" height="100" style="float: left; "/>
 							<strong>one</strong> of the possible remote repository. It can on another computer (accessible through ssh or http) or another directory on your workstation. You interact with it with <code>push</code>, <code>pull</code>...
 						</div>
@@ -110,7 +119,7 @@
 				<section>
 						<h3>Git revisions</h3>
 						<p>Or how to navigate into the repository</p>
-						<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<div class ="fragment current-visible overlap">
 						<ul>
 								<li><code>sha1</code>: unique reference to a commit object</li>
 								<li><code>refname</code>: symbolic string, pointing to a file into <code>.git/</code> dir.
@@ -121,7 +130,7 @@
 								</li>
 						</ul>
 						</div>
-						<div class="fragment" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<div class ="fragment overlap">
 						<ul>
 								<li><code>modifiers</code>: ancestors of a ref:
 										<ul>
@@ -210,10 +219,10 @@ $ cat .git/refs/heads/master
 							<li>All the modifications in a file may not end in the same commit, <code>git add file</code> may not be enough.</li>
 							<li>Reveal the real power of git by splitting your unstaged diffs in multiple commits.</li>
 						</ul>
-						<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<div class ="fragment current-visible overlap">
 								<img src="img/fun/efficient_melon.gif"/>
 						</div>
-						<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<div class ="fragment current-visible overlap">
 							<p>Some tools:</p>
 								<ul>
 										<li>git add --interactive (good luck)</li>
@@ -231,17 +240,17 @@ $ cat .git/refs/heads/master
 					<code>"Fix previous commit"</code><br>
 					This kind of commit is actually easy to avoid!
 					</p>
-					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+					<div class ="fragment current-visible overlap">
 						<p>If you want to fix the previous commit:</p>
 							<pre><code class="console" data-trim>
 							$ git add somestuff.c
 							$ git commit --amend
 							</code></pre>
 					</div>
-					<div class="fragment" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+					<div class ="fragment overlap">
 						<p>If it is not the direct previous commit:</p>
 
-						<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<div class ="fragment current-visible overlap">
 							<pre><code class="console" data-trim>
 								$ git log --oneline
 								1526d53 Print argv[0]
@@ -250,7 +259,7 @@ $ cat .git/refs/heads/master
 								</code></pre>
 						</div>
 
-						<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<div class ="fragment current-visible overlap">
 							<pre><code class="console">$ diff --git i/main.c w/main.c
 index 29c4ca0..0737fd3 100644
 --- i/main.c
@@ -263,7 +272,7 @@ index 29c4ca0..0737fd3 100644
         return 0;</code></pre>
 						</div>
 
-						<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<div class ="fragment current-visible overlap">
 							<pre><code class="console" data-trim>
 								$ git add main.c 
 								$ git commit --fixup=3d42b65
@@ -278,7 +287,7 @@ index 29c4ca0..0737fd3 100644
 							</code></pre>
 						</div>
 
-						<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+						<div class ="fragment current-visible overlap">
 							<pre><code class="console" data-trim>
 								$ git rebase -i --autosquash 3d42b65^
 								# in editor
@@ -299,13 +308,13 @@ index 29c4ca0..0737fd3 100644
 
 				<section>
 					<h3>Rebasing</h3>
-					<!-- <div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; "> -->
+					<!-- <div class ="fragment current-visible overlap"> -->
 					<!-- 	<img src="img/git_rebase_start.png"/> -->
 					<!-- </div> -->
-					<!-- <div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; "> -->
+					<!-- <div class ="fragment current-visible overlap"> -->
 					<!-- 	<img src="img/git_rebase_merge.png"/> -->
 					<!-- </div> -->
-					<!-- <div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; "> -->
+					<!-- <div class ="fragment current-visible overlap"> -->
 					<!-- 	<img src="img/git_rebase_end.png"/> -->
 					<!-- </div> -->
 					<img src="img/git_rebase_anim2.gif"/>
@@ -399,7 +408,7 @@ index 29c4ca0..0737fd3 100644
 				<section>
 					<h3>Rebase goes wrong</h3>
 					If rebase encounters conflicts, it stops and warn you. Keep calm, everything will be ok.
-					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+					<div class ="fragment current-visible overlap">
 							<pre><code class="console" data-trim>
 									$ git rebase -i origin/master
 									The previous cherry-pick is now empty, possibly due to conflict resolution.
@@ -412,7 +421,7 @@ index 29c4ca0..0737fd3 100644
 							<p>It means that rebase applied a commit that does nothing.</p>
 					</div>
 
-					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+					<div class ="fragment current-visible overlap">
 							<pre><code class="console" data-trim data-noescape>
 							$ git rebase --continue
 							Auto-merging platform/mppa/pktio/pcie.c
@@ -442,7 +451,7 @@ index 29c4ca0..0737fd3 100644
 							In case of conflict, edit, add and continue.
 					</div>
 					
-					<div class="fragment" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+					<div class ="fragment overlap">
 							<img src="img/git_sequencer.png"/>
 							<p>If you are lost, you can use git-sequencer (developped by nmorey).<br>
 							<a href="https://github.com/nmorey/git-sequencer-status/">https://github.com/nmorey/git-sequencer-status/</a>
@@ -502,7 +511,7 @@ index 29c4ca0..0737fd3 100644
 				<section>
 					<h3>Comparison of workflows</h3>
 					<p>&#x1F349; is good, &#x1F955; is wrong</p>
-					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+					<div class ="fragment current-visible overlap">
 						<h4>squash (via rebase && merge --squash)</h4>
 						<ul class="vegetable">
 							<li class="watermelon">easily revert a feature by reverting a single commit</li>
@@ -511,7 +520,7 @@ index 29c4ca0..0737fd3 100644
 						</ul>
 					</div>
 
-					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+					<div class ="fragment current-visible overlap">
 						<h4>rebase</h4>
 						<ul class="vegetable">
 							<li class="watermelon">preserve feature commit history</li>
@@ -520,7 +529,7 @@ index 29c4ca0..0737fd3 100644
 						</ul>
 					</div>
 
-					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+					<div class ="fragment current-visible overlap">
 						<h4>merge</h4>
 						<ul class="vegetable">
 							<li class="watermelon">preserve feature commit history</li>
@@ -530,7 +539,7 @@ index 29c4ca0..0737fd3 100644
 						</ul>
 					</div>
 
-					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+					<div class ="fragment current-visible overlap">
 						<h4>merge --no-ff</h4>
 						<ul class="vegetable">
 							<li class="watermelon">preserve feature commit history</li>
@@ -540,7 +549,7 @@ index 29c4ca0..0737fd3 100644
 						</ul>
 					</div>
 
-					<div class="fragment" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+					<div class ="fragment overlap">
 						<h4>rebase && merge --no-ff</h4>
 						<ul class="vegetable">
 							<li class="watermelon">preserve feature commit history</li>
@@ -555,7 +564,7 @@ index 29c4ca0..0737fd3 100644
 					<div>
 						<img src="./img/git-transport-v1-bottom.png"/>
 					</div>
-					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+					<div class ="fragment current-visible overlap">
 							Undo add
 								<pre><code class="console" data-trim>
 										$ edit
@@ -564,7 +573,7 @@ index 29c4ca0..0737fd3 100644
 								</code></pre>
 					</div>
 
-					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+					<div class ="fragment current-visible overlap">
 							Undo a commit and redo (commit --amend)
 								<pre><code class="console" data-trim>
 										$ git commit
@@ -574,7 +583,7 @@ index 29c4ca0..0737fd3 100644
 								</code></pre>
 					</div>
 
-					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+					<div class ="fragment current-visible overlap">
 							Create a new branch and rewind master.
 								<pre><code class="console" data-trim>
 										$ git branch dev/new_feature
@@ -583,14 +592,14 @@ index 29c4ca0..0737fd3 100644
 								</code></pre>
 					</div>
 
-					<div class="fragment current-visible" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+					<div class ="fragment current-visible overlap">
 							Lost in the middle of a merge.
 								<pre><code class="console" data-trim>
 										$ git reset --merge
 								</code></pre>
 					</div>
 
-					<div class="fragment" style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; width: 100%; ">
+					<div class ="fragment overlap">
 							The last WIP before the week-end.
 								<pre><code class="console" data-trim>
 										$ hack hack hack
