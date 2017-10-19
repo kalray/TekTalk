@@ -88,11 +88,6 @@
 				</section>
 
 				<section>
-					Git is powerful, but watch your fingers.
-					<img src="img/fun/fast_cut_watermelon.gif"/>
-				</section>
-
-				<section>
 					<div style="position:relative" >
 						<img src="./img/git-transport-v1-fixed.png"/>
 					</div>
@@ -318,6 +313,126 @@ index 29c4ca0..0737fd3 100644
 				</section>
 
 				<section>
+						<h3>Conflict resolution</h3>
+						<p>We want to merge (or rebase) dev branch upon master</p>
+						<div class ="fragment current-visible overlap">
+								<div style="float: left; width: 33%;">
+										common
+										<pre><code class="console">$ git show :1:main.c</code></pre>
+										<pre><code class="c">#include &lt;stdio.h&gt;
+
+int main() {
+  printf("Hello world\n");
+  return 0;
+}</code></pre>
+								</div>
+
+								<div style="float: left; width: 33%;">
+										master
+										<pre><code class="console">$ git show :2:main.c</code></pre>
+										</p>
+										<pre><code class="c">#include &lt;stdio.h&gt;
+
+int main(int argc, const char *argv[]) {
+  printf("Hello world: %s\n", argv[0]);
+  return 0;
+}</code></pre>
+								</div>
+
+								<div style="float: left; width: 33%;" >
+										dev
+										<pre><code class="console">$ git show :3:main.c</code></pre>
+										<pre><code class="c">#include &lt;stdio.h&gt;
+
+int main() {
+  int ret = printf("Hello world\n");
+  return (ret > 0);
+}</code></pre>
+								</div>
+						</div>
+
+						<div class="fragment current-visible overlap">
+								<pre><code class="c">#include &lt;stdio.h&gt;
+
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; ours
+int main(int argc, const char *argv[]) {
+  printf("Hello world: %s\n", argv[0]);
+  return 0;
+=======
+int main() {
+  int ret = printf("Hello world\n");
+  return (ret &gt; 0);
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; theirs
+}</code></pre>
+						</div>
+
+						<div class="fragment current-visible overlap">
+								<pre><code class="console">$ git checkout --ours -- main.c</code></pre>
+								<pre><code class="c">#include &lt;stdio.h&gt;
+int main(int argc, const char *argv[]) {
+  printf("Hello world: %s\n", argv[0]);
+  return 0;
+}</code></pre>
+						</div>
+
+						<div class="fragment current-visible overlap">
+								<pre><code class="console">$ git checkout --theirs -- main.c</code></pre>
+								<pre><code class="c">#include &lt;stdio.h&gt;
+int main() {
+  int ret = printf("Hello world\n");
+  return (ret &gt; 0);
+}</code></pre>
+						</div>
+
+						<div class="fragment current-visible overlap">
+								<pre><code class="console">$ git checkout --conflict=merge -- main.c</code></pre>
+								<pre><code class="c">#include &lt;stdio.h&gt;
+
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; ours
+int main(int argc, const char *argv[]) {
+  printf("Hello world: %s\n", argv[0]);
+  return 0;
+=======
+int main() {
+  int ret = printf("Hello world\n");
+  return (ret &gt; 0);
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; theirs
+}</code></pre>
+						</div>
+
+						<div class="fragment current-visible overlap">
+								<pre><code class="console">$ git checkout --conflict=diff3 -- main.c</code></pre>
+								<pre><code class="c">#include &lt;stdio.h&gt;
+
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; ours
+int main(int argc, const char *argv[]) {
+  printf("Hello world: %s\n", argv[0]);
+  return 0;
+||||||| base
+int main() {
+  printf("Hello world\n");
+  return 0;
+=======
+int main() {
+  int ret = printf("Hello world\n");
+  return (ret > 0);
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; theirs
+}</code></pre>
+						</div>
+
+						<div class="fragment current-visible overlap">
+								<p>These commands can be used during a merge conflict, but alos when you are switching branch and you have modified files in your worktree.</p>
+								<pre><code class="console" data-trim>
+										$ git checkout --ours
+										$ git checkout --theirs
+										$ git checkout --merge
+										$ git checkout --conflict=merge|diff3
+								</code></pre>
+						</div>
+
+				</section>
+
+				<section>
 					<h3>Rebasing</h3>
 					<!-- <div class ="fragment current-visible overlap"> -->
 					<!-- 	<img src="img/git_rebase_start.png"/> -->
@@ -342,25 +457,20 @@ index 29c4ca0..0737fd3 100644
 				</section>
 
 				<section>
-					<h3>When can I rebase?</h3>
-					<div style="float: left; width: 40%;">
+						<h3>When can I rebase?</h3>
 						<p>I heard rebase can be dangerous.</p>
-						<img src="img/fun/catapult_watermelon.gif" class="fragment"/>
-					</div>
-					<div style="float: right; width: 50%;">
-						<div class="fragment current-visible" style="position:absolute; top: 50%;">
-							<p>The rebase itself is not a problem (it is a local operation), but <code>push --force</code> must be used with cautious.</p>
+						<div class="fragment current-visible overlap">
+								<p>The rebase itself is not a problem (it is a local operation), but <code>push --force</code> must be used with cautious.</p>
 						</div>
-						<div class="fragment current-visible" style="position:absolute; top: 50%;">
-							<p><strong>Common case</strong>: your integration failed, and you know nobody already merged your branch, you can <code>push --force</code> or <code>push --force-with-lease</code>.</p>
+						<div class="fragment current-visible overlap">
+								<p><strong>Common case</strong>: your integration failed, and you know nobody already merged your branch, you can <code>push --force</code> or <code>push --force-with-lease</code>.</p>
 						</div>
-						<div class="fragment current-visible" style="position:absolute; top: 50%;">
-							<p>Never ever <code>rebase</code> and <code>push --force</code> a branch that have been integrated or merged by other users.</p>
+						<div class="fragment current-visible overlap">
+								<p>Never ever <code>rebase</code> and <code>push --force</code> a branch that have been integrated or merged by other users.</p>
 						</div>
-						<div class="fragment" style="position:absolute; top: 50%;">
-							<p>Make sure to rebase your branch upon master, and not the opposite (rebase -i is a good safeguard for this).</p>
+						<div class="fragment overlap">
+								<p>Make sure to rebase your branch upon master, and not the opposite (rebase -i is a good safeguard for this).</p>
 						</div>
-					</div>
 				</section>
 
 				<section>
@@ -468,7 +578,6 @@ index 29c4ca0..0737fd3 100644
 							<a href="https://github.com/nmorey/git-sequencer-status/">git-sequencer-status</a>
 							</p>
 					</div>
-
 				</section>
 
 				<section>
@@ -512,6 +621,38 @@ edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; \
   $EDITOR '+/^\\%(<<<<<<< \\|>>>>>>> \\|=======$\\)' `f`"
 add-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add `f`"
 					</code></pre>
+				</section>
+
+				<section>
+						<h3>git rerere</h3>
+						<p><code>reuse recorded resolution</code>: when enabled, remember conflict resolution and antomatically resolve this conflict if encountered again.<br>
+						Confidential feature, first introduced in git 1.2.0.</p>
+
+						<div class ="fragment current-visible overlap">
+						<pre><code class="console" data-trim>
+						$ git config --global rerere.enabled true
+						</code></pre>
+						</div>
+
+						<div class ="fragment current-visible overlap">
+						<pre><code class="console" data-trim>
+$ git commit
+Recorded resolution for 'main.c'.
+[detached HEAD faadfd5] Check printf return value
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+						</code></pre>
+						</div>
+
+						<div class ="fragment current-visible overlap">
+						<pre><code class="console" data-trim>
+$ git merge master
+Auto-merging main.c
+CONFLICT (content): Merge conflict in main.c
+Resolved 'main.c' using previous resolution.
+Automatic merge failed; fix conflicts and then commit the result.
+						</code></pre>
+						</div>
+
 				</section>
 
 				<section>
